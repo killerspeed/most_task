@@ -1,2 +1,4 @@
 #!/bin/bash
-echo "hello WORLD"
+read -p "enter name: " name
+Greetings="Hello, $name"
+echo $Greetings
