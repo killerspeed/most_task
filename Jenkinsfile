@@ -2,9 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/killerspeed/most_task'
+                git branch: 'main', url: 'https://github.com/killerspeed/most_task.git'
+            }
+        }
+
+        // Добавляем этот этап!
+        stage('Set Permissions') {
+            steps {
+                sh 'chmod +x hello.sh'
+                sh 'ls -la hello.sh'  // Проверка прав (должно быть -rwxr-xr-x)
             }
         }
 
@@ -16,22 +24,10 @@ pipeline {
 
         stage('Save Artifact') {
             steps {
-                // Сохраняем вывод в файл
                 sh './hello.sh > output.txt'
-                // Архивируем артефакт в Jenkins
                 archiveArtifacts artifacts: 'output.txt', allowEmptyArchive: false
-                // Копируем в произвольную директорию на сервере
                 sh 'mkdir -p /tmp/ci_artifacts && cp output.txt /tmp/ci_artifacts/'
             }
-        }
-    }
-
-    post {
-        failure {
-            echo 'Pipeline failed!'
-        }
-        success {
-            echo 'Pipeline succeeded!'
         }
     }
 }
