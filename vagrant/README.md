@@ -78,3 +78,25 @@ lsb_release -a
 
 `Стало: node.vm.box = "ubuntu/jammy64"`
 
+# Install Jenkins
+1. **Установка Jenkins через Vagrant**
+
+_Для установки Jenkins добавьте следующий код в блок `node.vm.provision "shell", inline: <<-SHELL` вашего Vagrantfile:_
+
+``` shell
+            node.vm.provision "shell", inline: <<-SHELL
+                sudo apt update && sudo apt upgrade -y
+				sudo apt dist-upgrade -y
+				sudo apt autoremove -y
+				sudo apt install -y openjdk-21-jdk
+				curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+				sudo apt update
+				sudo apt install -y jenkins
+				sudo systemctl start jenkins
+
+			SHELL
+```
