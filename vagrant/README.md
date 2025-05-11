@@ -68,13 +68,13 @@ sudo reboot
 lsb_release -a 
 ```
 
-# Changelog (версия 2):
+# Changelog (версия 1.1):
 1. **Исправленный и улучшенный вариант конфигурации Vagrant**
 
 - *По итогу тестов было принято решено сразу устанволивтаь 22.04
 Меняем строчку:*
 
-`Было: bento/ubuntu-20.04`
+`Было: node.vm.box = bento/ubuntu-20.04`
 
 `Стало: node.vm.box = "ubuntu/jammy64"`
 
@@ -141,3 +141,69 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
 2. **Улучшения:**
 - Скрипт разделен на секции
 - Комментарии
+
+# Changelog (версия 5):
+1. **Улучшения:**
+- Конфигурация Nginx:
+  - Редактирование файлa /etc/zabbix/nginx.conf раскомментировав и настройки директивы 'listen' и 'server_name'.
+- Мониторинг:
+  - Добавлена проверка статусов всех сервисов в конце
+  - Перезапуск и включение сервисов
+- Конфигурация Zabbix Server
+  - Автоматическая конфигурация через sed
+  - Указан DBHost и DBPassword
+  - Прописаны параметры подключения к БД
+2. **Добваление кода**
+- _Блок `node.vm.provision "shell", inline: <<-SHELL` выглядит следующим образом_
+```shell
+node.vm.provision "shell", inline: <<-SHELL
+			# Обновление системы
+                sudo apt update && sudo apt upgrade -y
+				sudo apt dist-upgrade -y
+				sudo apt autoremove -y
+				sudo apt install -y wget curl gnupg2 software-properties-common
+				
+			# ========== Установка Jenkins ==========
+				sudo apt install -y openjdk-21-jdk
+				curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+				sudo apt update
+				sudo apt install -y jenkins
+				sudo systemctl start jenkins
+			# ========== Установка PostgreSQL ==========
+				sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+				wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+			
+			# ========== Установка Zabbix ==========
+				wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_6.0+ubuntu22.04_all.deb
+				sudo dpkg -i zabbix-release_latest_6.0+ubuntu22.04_all.deb
+				sudo apt update
+				sudo apt install -y postgresql-15 postgresql-client-15
+				sudo apt install -y zabbix-server-pgsql zabbix-frontend-php php8.1-pgsql zabbix-nginx-conf zabbix-sql-scripts zabbix-agent
+				
+			# Настройка БД	
+				sudo -u postgres psql -c "CREATE USER zabbix WITH PASSWORD 'strong_password'"
+				sudo -u postgres psql -c "CREATE DATABASE zabbix OWNER zabbix"
+				zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
+				
+			# Конфигурация Zabbix Server
+				sudo sed -i 's/^# DBHost.*/DBHost=localhost/' /etc/zabbix/zabbix_server.conf
+				sudo sed -i 's/^# DBPassword.*/DBPassword=strong_password/' /etc/zabbix/zabbix_server.conf
+				
+			# Конфигурация Nginx	
+				sudo sed -i 's/^#        listen          8080;.*/listen 172.18.1.15:80;/' /etc/zabbix/nginx.conf
+				sudo sed -i 's/^#        server_name     example.com;.*/server_name 172.18.1.15;/' /etc/zabbix/nginx.conf
+				
+			# Перезапуск и включение сервисов
+				sudo systemctl restart postgresql
+				sudo systemctl enable --now zabbix-server zabbix-agent nginx php8.1-fpm
+				sudo systemctl restart nginx
+
+			# Проверка статусов
+				echo "Проверка статусов сервисов:"
+				sudo systemctl status jenkins postgresql zabbix-server zabbix-agent nginx --no-pager
+            SHELL
+```
