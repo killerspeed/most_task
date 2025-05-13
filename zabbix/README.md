@@ -100,8 +100,11 @@ sudo systemctl restart nginx
 
 ### Проверка установки
 После выполнения всех команд:
+
 Откройте в браузере: http://Ваш_Ip_servera
+
 Должен появиться веб-интерфейс Zabbix
+
 Стандартные учетные данные:
 - Логин: Admin
 - Пароль: zabbix
@@ -109,10 +112,9 @@ sudo systemctl restart nginx
 
 
 
-
+# Установка и настройка Zabbix через vagrant
 
 Вот часть конфигурации Vagrantfile для развертывания Zabbix-сервера:
-
 Если нету этой части кода её надо всатвить в `node.vm.provision "shell", inline: <<-SHELL`
 ``` shell
 node.vm.provision "shell", inline: <<-SHELL
