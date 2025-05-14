@@ -147,7 +147,100 @@ echo $Greetings
  		- Pipeline
    		-  Git
   
-# 5 CD-часть:
+## 5 CD-часть:
 
-# 6 Zabbix:
+## 6 Zabbix:
+### Установка и настройка Zabbix
+*Установите Zabbix, следуя инструкции из репозитория:*
+https://github.com/killerspeed/most_task/blob/version/zabbix/README.md
+
+_Доступ к веб-интерфейсу:_
+- После установки откройте веб-интерфейс Zabbix в браузере:
+- Адрес: http://<IP_вашего_сервера> или http://localhost:80
+- 
+#### Добавление нового хоста в Zabbix
+
+*Добавление второй машины для мониторинга:*
+ - Перейдите в раздел Configuration → Hosts. 
+ - Нажмите Create Host и заполните необходимые параметры.
+_После нажатия Create Host откроется форма настройки хоста. Заполните следующие поля:_
+- host name - задать имя хоста 
+- Templates - Выберите подходящие шаблон 
+- Groups - Назначьте хост в группу (например, Linux Servers)
+- Interfaces type agent - Нажмите Add и укажите:
+  - IP-адрес сервера.
+  - Порт (по умолчанию 10050 для Zabbix Agent).
+
+![add_vm.png](img%2Fadd_vm.png)
+
+#### Завершение настройки хоста в Zabbix
+
+1. Сохранение настроек
+   - Нажмите кнопку Update для применения изменений.
+2. Проверка подключения 
+   - Если вы использовали мой Vagrantfile:
+     - Хост должен отображаться в списке с зелёным индикатором (успешное подключение).
+
+![img.png](img/img.png)
+3. Ручная установка Zabbix Agent (если использовали свой сервер)
+```bash
+# Обновление системы
+sudo apt update && sudo apt upgrade -y
+sudo apt dist-upgrade -y
+sudo apt autoremove -y
+
+# Установка репозитория Zabbix
+wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu$(lsb_release -rs)_all.deb
+sudo dpkg -i zabbix-release_6.0-4+ubuntu$(lsb_release -rs)_all.deb
+sudo apt update
+
+# Установка и настройка Zabbix Agent
+sudo apt install zabbix-agent -y
+
+# Конфигурация агента
+sudo sed -i 's/^ServerActive=127.0.0.1.*/ServerActive=IP_ZABBIX_SERVER/' /etc/zabbix/zabbix_agentd.conf
+sudo sed -i 's/^Server=127.0.0.1.*/Server=IP_ZABBIX_SERVER/' /etc/zabbix/zabbix_agentd.conf
+sudo sed -i 's/^Hostname=Zabbix server.*/Hostname=ИМЯ_ХОСТА_ИЗ_ZABBIX/' /etc/zabbix/zabbix_agentd.conf
+
+# Перезапуск агента
+sudo systemctl restart zabbix-agent.service
+```
+
+
+## Важные замечания
+- Замените IP_ZABBIX_SERVER на IP-адрес вашего Zabbix-сервера.
+- Укажите ИМЯ_ХОСТА_ИЗ_ZABBIX — имя, которое вы задали при создании хоста (поле Host name).
+
+#### После добавления хоста и успешного подключения агента можно настроить отображение метрик на Dashboard.
+
+1. Переход в Dashboard 
+- В веб-интерфейсе Zabbix перейдите в раздел: `Monitoring` → `Dashboard` → `All dashboards`
+
+2. Добавление виджетов
+- Нажмите `Edit dashboard` (или `Create dashboard`, если он ещё не создан).
+
+![img_1.png](img/img_1.png)
+3. Настройка графика
+Выберите `Graph` → `Add`.
+
+_Укажите:_
+- Название (например, "`CPU utilization`").
+- `type` `Graph`
+
+![img.png](img/img2.png)
+
+_Далее укажем имя хоста в нашем случае `most2` и метрики `Linux: CPU user time` `Linux: Load average (1m avg)
+`_
+
+![img.png](img/img11.png)
+
+все тоже самое делаем для мониторинга Диска и Памяти и так же для второй машины
+
+4. Готовый дашборд
+После добавления всех нужных виджетов:
+
+*Нажмите Save dashboard.*
+
+![img_1.png](img/img_11.png)
+
 
