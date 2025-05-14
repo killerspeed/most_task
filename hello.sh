@@ -1,3 +1,3 @@
 #!/bin/bash
-Greetings="Hello, name"
+Greetings="Hello, Most"
 echo $Greetings
