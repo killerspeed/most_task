@@ -68,7 +68,7 @@ sudo reboot
 lsb_release -a 
 ```
 
-# Changelog (v1.2):
+# Changelog (v1.1):
 1. **Исправленный и улучшенный вариант конфигурации Vagrant**
 
 - *По итогу тестов было принято решено сразу устанволивтаь 22.04
@@ -213,6 +213,7 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   - Поддержка Docker-установки Jenkins
   - Автоматическое развертывание Docker-in-Docker (DinD)
   - Создание сети Docker для изоляции Jenkins
+  - Синхронизация папок
 - Changed
   - Переход на нумерацию версий в формате vX.Y.Z
   - Обновление конфигурации Nginx для Zabbix
