@@ -138,7 +138,7 @@ echo $Greetings
 ```
 
 ## 4 CI-часть:
-Для реализация удалённой сборки проекта (из п. №2) с помощью CI-pipeline был использован jenkins 
+### Для реализация удалённой сборки проекта (из п. №2) с помощью CI-pipeline был использован jenkins 
 - Требования
 	- Установленный и настроенный сервер Jenkins 
       - как устанвоить Jenkins можно посмотерть в репозитории устанвока [Jenkins](https://github.com/killerspeed/most_task/tree/version/jenkins)
@@ -152,12 +152,34 @@ echo $Greetings
 ![img.png](img.png)
 
 
-Для создание Pipeline нажимаем создание item:
+### Для создание Pipeline нажимаем создание item:
 - Выберите тип "Pipeline"
 - Укажите название вашего проекта
 
 ![img_1.png](img/name.png)
 
+### Настройка SCM (Git)
+- В разделе "Pipeline" выберите:
+	- Definition: Pipeline script from SCM
+ 	- SCM: Git
+- Укажите Repository URL, например:
+```
+Ваша ссылка на репозиторий
+```
+- Если требуется аутентификация, добавьте Credentials (логин и пароль или токен).
+
+![pipeline](https://github.com/user-attachments/assets/d912bc5c-5572-41e0-83d9-a7cfea2f43b3)
+
+ 
+### Настройка веток для сборки
+- В разделе "Branches to build" укажите:
+	-  Branch Specifier: Оставьте пустым для сборки любой ветки или укажите конкретную, например main.
+###  Указание пути к Jenkinsfile
+- В поле "Script Path" укажите путь к файлу конфигурации, например:
+  ```
+  jenkins/Jenkinsfile  
+  ```
+![pipeline1](https://github.com/user-attachments/assets/f9704172-515f-42e5-b01d-d53ee3dedebc)
 
   
 ## 5 CD-часть:
