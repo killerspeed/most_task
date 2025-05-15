@@ -181,7 +181,207 @@ echo $Greetings
   ```
 ![pipeline1](https://github.com/user-attachments/assets/f9704172-515f-42e5-b01d-d53ee3dedebc)
 
-  
+### тестирование 
+
+Для теста нажимапем `собрать сейчас
+`
+![test](https://github.com/user-attachments/assets/9a268799-4283-4a56-b474-14c8c2fca699)
+
+```
+Started by user admin
+Obtained jenkins/Jenkinsfile from git https://github.com/killerspeed/most_task/
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Hello world
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/killerspeed/most_task/
+ > git init /var/lib/jenkins/workspace/Hello world # timeout=10
+Fetching upstream changes from https://github.com/killerspeed/most_task/
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+Setting http proxy: srvproxy.power.rb:8080
+ > git fetch --tags --force --progress -- https://github.com/killerspeed/most_task/ +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/killerspeed/most_task/ # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/version^{commit} # timeout=10
+Checking out Revision bb098e39a120ddd4041817e4ec97a92a3aa1eada (refs/remotes/origin/version)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f bb098e39a120ddd4041817e4ec97a92a3aa1eada # timeout=10
+Commit message: "docs to v1.3"
+First time build. Skipping changelog.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Hello world/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/killerspeed/most_task.git # timeout=10
+Fetching upstream changes from https://github.com/killerspeed/most_task.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+Setting http proxy: srvproxy.power.rb:8080
+ > git fetch --tags --force --progress -- https://github.com/killerspeed/most_task.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 2868afb63f460fbcda5c6add2d566bbfa86c0efb (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2868afb63f460fbcda5c6add2d566bbfa86c0efb # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b main 2868afb63f460fbcda5c6add2d566bbfa86c0efb # timeout=10
+Commit message: "Delete .github/workflows/main.yml"
+First time build. Skipping changelog.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Set Permissions)
+[Pipeline] sh
++ chmod +x hello.sh
+[Pipeline] sh
++ ls -la hello.sh
+-rwxr-xr-x 1 jenkins jenkins 81 May 15 18:44 hello.sh
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Run Script)
+[Pipeline] sh
++ ./hello.sh
+Hello,
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Save Artifact)
+[Pipeline] sh
++ ./hello.sh
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] sh
++ mkdir -p /tmp/ci_artifacts
++ cp output.txt /tmp/ci_artifacts/
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+```
+
+Поменялся вывод
+![script changes](https://github.com/user-attachments/assets/c908b999-1ae2-49d3-9ce8-d4b068073a73)
+- Контекст: 
+	- Отображает изменения в файле hello.sh в рамках выполнения Jenkins Pipeline.
+- Назначение:
+	- Показывает историю изменений в репозитории, связанных с последней сборкой, что полезно для отслеживания модификаций кода.
+
+```
+Started by user admin
+Replayed #4
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Hello world
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Hello world/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/killerspeed/most_task/ # timeout=10
+Fetching upstream changes from https://github.com/killerspeed/most_task/
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+Setting http proxy: srvproxy.power.rb:8080
+ > git fetch --tags --force --progress -- https://github.com/killerspeed/most_task/ +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/version^{commit} # timeout=10
+Checking out Revision b5a4f96a65f8b0b0472a35c437d8c06a32f71ed5 (refs/remotes/origin/version)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f b5a4f96a65f8b0b0472a35c437d8c06a32f71ed5 # timeout=10
+Commit message: "Update hello.sh"
+ > git rev-list --no-walk b5a4f96a65f8b0b0472a35c437d8c06a32f71ed5 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Hello world/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/killerspeed/most_task.git # timeout=10
+Fetching upstream changes from https://github.com/killerspeed/most_task.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+Setting http proxy: srvproxy.power.rb:8080
+ > git fetch --tags --force --progress -- https://github.com/killerspeed/most_task.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/version^{commit} # timeout=10
+Checking out Revision b5a4f96a65f8b0b0472a35c437d8c06a32f71ed5 (refs/remotes/origin/version)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f b5a4f96a65f8b0b0472a35c437d8c06a32f71ed5 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D version # timeout=10
+ > git checkout -b version b5a4f96a65f8b0b0472a35c437d8c06a32f71ed5 # timeout=10
+Commit message: "Update hello.sh"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Set Permissions)
+[Pipeline] sh
++ chmod +x hello.sh
+[Pipeline] sh
++ ls -la hello.sh
+-rwxr-xr-x 1 jenkins jenkins 52 May 15 22:21 hello.sh
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Run Script)
+[Pipeline] sh
++ ./hello.sh
+Hello, Most # Поменялся вывод
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Save Artifact)
+[Pipeline] sh
++ ./hello.sh
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] sh
++ mkdir -p /tmp/ci_artifacts
++ cp output.txt /tmp/ci_artifacts/
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+
+```
+- Слева внизу будут отоброжаться история выполнения сборок
+
+
+![1](https://github.com/user-attachments/assets/4c240cd4-5074-4a40-bf47-6d95cd6550d1)
+
 ## 5 CD-часть:
 
 ## 6 Zabbix:
