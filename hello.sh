@@ -1,4 +1,3 @@
 #!/bin/bash
-read -p "enter name: " name
-Greetings="Hello, $name"
+Greetings="Hello, Most"
 echo $Greetings

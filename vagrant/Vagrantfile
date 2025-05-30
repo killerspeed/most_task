@@ -1,12 +1,14 @@
 Vagrant.configure("2") do |config|
     servers=[
         {
-          :hostname => "most3",
+          :hostname => "most1",
           :ip => "172.18.1.15",
-          :name => 'most3'
+          :name => 'most1',
+		  :hostname1 => "most2",
+          :ip1 => "172.18.1.16",
+          :name1 => 'most2'
         }
       ]
-
     servers.each do |machine|
         config.vm.define machine[:hostname] do |node|
             node.vm.box = "ubuntu/jammy64"
@@ -100,6 +102,32 @@ Vagrant.configure("2") do |config|
             node.vm.provider :virtualbox do |vb|
                 vb.customize ["modifyvm", :id, "--memory", 2048, "--cpus", 2]
                 vb.name = machine[:name]
+					end
+						end
+
+		config.vm.define machine[:hostname1] do |node|
+		            node.vm.box = "ubuntu/jammy64"
+            node.vm.hostname = machine[:hostname1]
+			node.vm.network "forwarded_port", guest: 10050, host: 10051
+            node.vm.network :private_network, ip: machine[:ip1]
+            node.vm.provision "shell", inline: <<-SHELL
+                sudo apt update && sudo apt upgrade -y
+				sudo apt dist-upgrade -y
+				sudo apt autoremove -y
+				wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu$(lsb_release -rs)_all.deb
+				sudo dpkg -i zabbix-release_6.0-4+ubuntu$(lsb_release -rs)_all.deb
+				sudo apt update
+				sudo apt install zabbix-agent -y
+				sudo sed -i 's/^ServerActive=127.0.0.1.*/ServerActive=172.18.1.15/' /etc/zabbix/zabbix_agentd.conf
+				sudo sed -i 's/^Server=127.0.0.1.*/Server=172.18.1.15/' /etc/zabbix/zabbix_agentd.conf
+				sudo sed -i 's/^Hostname=Zabbix server.*/Hostname=most2/' /etc/zabbix/zabbix_agentd.conf
+				sudo systemctl restart zabbix-agent.service
+            SHELL
+
+            node.vm.provider :virtualbox do |vb|
+                vb.customize ["modifyvm", :id, "--memory", 2048, "--cpus", 2]
+                vb.name = machine[:name1]
+
             end
                 end
     end
